@@ -14,8 +14,8 @@ where
         ops::Neg::neg(self.0.calc(v))
     }
 
-    fn diff(&self) -> D<T, Self::Return> {
-        neg(self.0.diff())
+    fn diff<ID: Var>(&self) -> D<T, Self::Return> {
+        neg(self.0.diff::<ID>())
     }
 }
 pub fn neg<T, A>(a: A) -> D<T, Neg<T, A>>

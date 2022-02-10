@@ -2,7 +2,7 @@ use crate::{consts::*, differentiables::*, domain::Domain};
 use std::{fmt::Display, marker::PhantomData};
 
 /// trait for variables
-pub trait Var {}
+pub trait Var: 'static {}
 
 /// wrapper type for variables
 #[derive(PartialEq, Debug, Clone)]
@@ -17,14 +17,23 @@ where
         v
     }
 
-    fn diff(&self) -> D<T, Self::Return> {
-        c(T::ONE)
+    fn diff<ID2: Var>(&self) -> D<T, Self::Return> {
+        use std::any::TypeId;
+
+        if TypeId::of::<ID>() == TypeId::of::<ID2>() {
+            c(T::ONE)
+        } else {
+            c(T::ZERO)
+        }
     }
 }
-impl<T, ID: Var> Var for V<T, ID> {}
-pub fn v<T: Domain, ID: Var + Clone>(_v: ID) -> D<T, V<T, ID>> {
+
+impl<T: 'static, ID: Var> Var for V<T, ID> {}
+pub fn v<T: Domain, ID: Var + Clone>(_: ID) -> D<T, V<T, ID>> {
     D(V(PhantomData), PhantomData)
 }
+
+pub struct ConsID<A, B>(PhantomData<(A, B)>);
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct X;

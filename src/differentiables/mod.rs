@@ -6,6 +6,7 @@ pub mod mul;
 pub mod neg;
 pub mod sin;
 
+use crate::var::*;
 use std::{fmt::Display, marker::PhantomData};
 
 /// trait for differentiable things
@@ -13,7 +14,7 @@ pub trait Differentiable<T>: Clone {
     type Return: Differentiable<T>;
 
     fn calc(&self, v: T) -> T;
-    fn diff(&self) -> D<T, Self::Return>;
+    fn diff<ID: Var>(&self) -> D<T, Self::Return>;
 }
 
 /// wrapper type for differentiable things
@@ -30,8 +31,8 @@ where
         I::calc(&self.0, v)
     }
 
-    fn diff(&self) -> D<T, Self::Return> {
-        I::diff(&self.0)
+    fn diff<ID: Var>(&self) -> D<T, Self::Return> {
+        I::diff::<ID>(&self.0)
     }
 }
 

@@ -13,13 +13,13 @@ pub mod prelude {
 }
 
 #[cfg(test)]
-mod tests {
+mod single_var_tests {
     use super::prelude::*;
 
     #[test]
     fn simple_addition() {
         let addition = v(X) + c(1i32);
-        let r = addition.diff();
+        let r = addition.diff::<X>();
 
         assert_eq!(r, c(1) + c(0));
         // calc won't use the value passed in, since `r` is a constant, but we still need to pass a parameter
@@ -52,7 +52,7 @@ mod tests {
         let addition = c(1.0) + sin(v(X));
         assert_eq!(addition.calc(0.0), 1.0);
 
-        let r = addition.diff();
+        let r = addition.diff::<X>();
 
         assert_eq!(r, c(0.0) + mul(cos(v(X)), c(1.0)));
         assert_eq!(r.calc(0.0), 1.0);
@@ -62,12 +62,62 @@ mod tests {
     fn weird_one() {
         let val = cos(c(1.0f32) + sin(v(X)));
 
-        let r = val.diff();
+        let r = val.diff::<X>();
 
         // println!("{r}");
         assert_eq!(
             r,
             -sin(c(1.0) + sin(v(X))) * (c(0.0) + (cos(v(X)) * c(1.0)))
         );
+    }
+
+    #[test]
+    fn chain_rule() {
+        let val = cos(cos(cos(v(X)))) + c(1.0f32);
+
+        let r = val.diff::<X>();
+
+        let e = (-sin(cos(cos(v(X)))) * (-sin(cos(v(X))) * (-sin(v(X)) * c(1.0)))) + c(0.0);
+
+        assert_eq!(r, e);
+    }
+}
+
+#[cfg(test)]
+mod multi_var_tests {
+    use super::prelude::*;
+
+    #[test]
+    fn simple() {
+        let val = cos(v(X)) + sin(v(Y)) + c(1.0f32);
+
+        let rx = val.diff::<X>();
+
+        assert_eq!(rx, ((-sin(v(X)) * c(1.0)) + (cos(v(Y)) * c(0.0))) + c(0.0));
+
+        let ry = val.diff::<Y>();
+
+        assert_eq!(ry, ((-sin(v(X)) * c(0.0)) + (cos(v(Y)) * c(1.0))) + c(0.0));
+    }
+
+    #[test]
+    fn chain_rule() {
+        let val = cos(cos(cos(v(X) * v(Y)))) + c(1.0f32);
+
+        let r = val.diff::<X>();
+
+        let e = (-sin(cos(cos(v(X) * v(Y))))
+            * (-sin(cos(v(X) * v(Y))) * (-sin(v(X) * v(Y)) * (c(1.0) * v(Y) + v(X) * c(0.0)))))
+            + c(0.0f32);
+
+        // since we don't have simplification, the result is
+        //         ((-sin(cos(cos((X * Y)))) * (-sin(cos((X * Y))) * (-sin((X * Y)) * ((1 * Y) + (X * 0))))) + 0)
+        // the result wolframalpha says for (d/dx) cos(cos(cos(x*y))) + 1 is
+        //         -y sin(x y) sin(cos(x y)) sin(cos(cos(x y)))
+        // which we can see is the same
+
+        // and thus we can see that chain rule works correctly :)
+
+        assert_eq!(r, e);
     }
 }

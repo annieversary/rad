@@ -19,10 +19,10 @@ where
         self.0.calc(v.clone()) * self.1.calc(v)
     }
 
-    fn diff(&self) -> D<T, Self::Return> {
+    fn diff<ID: Var>(&self) -> D<T, Self::Return> {
         add(
-            mul(self.0.diff(), self.1.clone()),
-            mul(self.0.clone(), self.1.diff()),
+            mul(self.0.diff::<ID>(), self.1.clone()),
+            mul(self.0.clone(), self.1.diff::<ID>()),
         )
     }
 }

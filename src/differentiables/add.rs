@@ -16,8 +16,8 @@ where
         self.0.calc(v.clone()) + self.1.calc(v)
     }
 
-    fn diff(&self) -> D<T, Self::Return> {
-        add(self.0.diff(), self.1.diff())
+    fn diff<ID: Var>(&self) -> D<T, Self::Return> {
+        add(self.0.diff::<ID>(), self.1.diff::<ID>())
     }
 }
 pub fn add<T, A, B>(a: A, b: B) -> D<T, Add<T, A, B>>

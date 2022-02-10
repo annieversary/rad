@@ -25,8 +25,8 @@ where
         T::sin(self.0.calc(v))
     }
 
-    fn diff(&self) -> D<T, Self::Return> {
-        mul(cos(self.0.clone()), self.0.diff())
+    fn diff<ID: Var>(&self) -> D<T, Self::Return> {
+        mul(cos(self.0.clone()), self.0.diff::<ID>())
     }
 }
 pub fn sin<T, A>(a: A) -> D<T, Sin<T, A>>

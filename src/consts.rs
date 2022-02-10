@@ -1,5 +1,6 @@
 use crate::differentiables::Differentiable;
 use crate::domain::Domain;
+use crate::var::Var;
 use std::marker::PhantomData;
 
 use crate::differentiables::*;
@@ -13,7 +14,7 @@ impl<T: Domain> Differentiable<T> for Const<T> {
         self.0.clone()
     }
 
-    fn diff(&self) -> D<T, Self::Return> {
+    fn diff<ID: Var>(&self) -> D<T, Self::Return> {
         c(T::ZERO)
     }
 }
