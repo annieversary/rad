@@ -1,92 +1,20 @@
-use std::marker::PhantomData;
-
+pub mod consts;
 pub mod differentiables;
+pub mod domain;
+pub mod var;
 
-/// the type that we differentiate over
-/// will usually be a float or integer number
-pub trait Domain: Clone {
-    const ZERO: Self;
-    const ONE: Self;
-}
+// TODO implement ops for the stuff, so we can do `c(1) + sin(c(1))`
 
-/// trait for differentiable things
-pub trait Differentiable<T>: Clone {
-    type Return: Differentiable<T>;
-
-    fn calc(&self, v: T) -> T;
-    fn diff(&self) -> D<T, Self::Return>;
-}
-
-/// wrapper type for differentiable things
-#[derive(PartialEq, Debug, Clone)]
-pub struct D<T, I: Differentiable<T>>(I, PhantomData<T>);
-// pass calls to inner impl
-impl<T, I: Differentiable<T>> Differentiable<T> for D<T, I>
-where
-    Self: Clone,
-{
-    type Return = I::Return;
-
-    fn calc(&self, v: T) -> T {
-        I::calc(&self.0, v)
-    }
-
-    fn diff(&self) -> D<T, Self::Return> {
-        I::diff(&self.0)
-    }
-}
-
-/// trait for variables
-pub trait Var {}
-
-/// wrapper type for variables
-#[derive(PartialEq, Debug, Clone)]
-pub struct V<T, ID: Var>(PhantomData<(T, ID)>);
-impl<T: Domain, ID: Var> Differentiable<T> for V<T, ID>
-where
-    Self: Clone,
-{
-    type Return = Const<T>;
-
-    fn calc(&self, v: T) -> T {
-        v
-    }
-
-    fn diff(&self) -> D<T, Self::Return> {
-        c(T::ONE)
-    }
-}
-impl<T, ID: Var> Var for V<T, ID> {}
-pub fn v<T, ID: Var>(_v: ID) -> V<T, ID> {
-    V(PhantomData)
-}
-
-#[derive(PartialEq, Debug, Clone)]
-pub struct Const<T>(pub T);
-impl<T: Domain> Differentiable<T> for Const<T> {
-    type Return = Const<T>;
-
-    fn calc(&self, _: T) -> T {
-        self.0.clone()
-    }
-
-    fn diff(&self) -> D<T, Self::Return> {
-        c(T::ZERO)
-    }
-}
-impl<T: Domain> From<T> for D<T, Const<T>> {
-    fn from(t: T) -> Self {
-        D(Const(t), PhantomData)
-    }
-}
-pub fn c<T: Domain>(t: T) -> D<T, Const<T>> {
-    t.into()
+pub mod prelude {
+    pub use crate::consts::*;
+    pub use crate::differentiables::{add::*, cos::*, mul::*, neg::*, sin::*, *};
+    pub use crate::domain::*;
+    pub use crate::var::*;
 }
 
 #[cfg(test)]
 mod tests {
-    use super::differentiables::*;
-    use super::*;
+    use super::prelude::*;
 
     // TODO move this to inner code
     #[derive(PartialEq, Debug, Clone)]
@@ -153,5 +81,15 @@ mod tests {
 
         assert_eq!(r, c(0.0) + mul(cos(v(X)), c(1.0)));
         assert_eq!(r.calc(0.0), 1.0);
+    }
+
+    #[test]
+    fn weird_one() {
+        let v = cos(c(1.0) + sin(v(X)));
+
+        let r = v.diff();
+
+        dbg!(r);
+        // assert_eq!(dbg!(r), mul(sin(add(c(1.0), sin(v(X)))), neg(cos(v(X)))));
     }
 }
