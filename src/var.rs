@@ -1,5 +1,5 @@
 use crate::{consts::*, differentiables::*, domain::Domain};
-use std::marker::PhantomData;
+use std::{fmt::Display, marker::PhantomData};
 
 /// trait for variables
 pub trait Var {}
@@ -32,3 +32,14 @@ impl Var for X {}
 #[derive(PartialEq, Debug, Clone)]
 pub struct Y;
 impl Var for Y {}
+
+impl<T: Display> Display for V<T, X> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "X")
+    }
+}
+impl<T: Display> Display for V<T, Y> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "Y")
+    }
+}

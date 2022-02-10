@@ -49,3 +49,11 @@ where
         mul(self, rhs)
     }
 }
+
+impl<T: Display, A: Differentiable<T> + Display, B: Differentiable<T> + Display> Display
+    for Mul<T, A, B>
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "({} * {})", self.0, self.1)
+    }
+}

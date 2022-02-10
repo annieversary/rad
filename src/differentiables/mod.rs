@@ -6,7 +6,7 @@ pub mod mul;
 pub mod neg;
 pub mod sin;
 
-use std::marker::PhantomData;
+use std::{fmt::Display, marker::PhantomData};
 
 /// trait for differentiable things
 pub trait Differentiable<T>: Clone {
@@ -32,5 +32,11 @@ where
 
     fn diff(&self) -> D<T, Self::Return> {
         I::diff(&self.0)
+    }
+}
+
+impl<T: Display, I: Display + Differentiable<T>> Display for D<T, I> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.0)
     }
 }

@@ -41,3 +41,9 @@ where
 {
     D(Cos(a, PhantomData), PhantomData)
 }
+
+impl<T: Display, A: Display + Differentiable<T>> Display for Cos<T, A> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "cos({})", self.0)
+    }
+}

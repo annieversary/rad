@@ -25,3 +25,9 @@ impl<T: Domain> From<T> for D<T, Const<T>> {
 pub fn c<T: Domain>(t: T) -> D<T, Const<T>> {
     t.into()
 }
+
+impl<T: std::fmt::Display> std::fmt::Display for Const<T> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.0)
+    }
+}

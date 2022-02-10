@@ -4,8 +4,6 @@ pub mod differentiables;
 pub mod domain;
 pub mod var;
 
-// TODO implement ops for the stuff, so we can do `c(1) + sin(c(1))`
-
 pub mod prelude {
     pub use crate::consts::*;
     pub use crate::default_impls::*;
@@ -62,11 +60,14 @@ mod tests {
 
     #[test]
     fn weird_one() {
-        let v = cos(c(1.0) + sin(v(X)));
+        let val = cos(c(1.0f32) + sin(v(X)));
 
-        let r = v.diff();
+        let r = val.diff();
 
-        dbg!(r);
-        // assert_eq!(dbg!(r), sin(c(1.0) + sin(v(X))) * -cos(v(X)));
+        // println!("{r}");
+        assert_eq!(
+            r,
+            -sin(c(1.0) + sin(v(X))) * (c(0.0) + (cos(v(X)) * c(1.0)))
+        );
     }
 }

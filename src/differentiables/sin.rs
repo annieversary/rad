@@ -41,3 +41,9 @@ where
 {
     D(Sin(a, PhantomData), PhantomData)
 }
+
+impl<T: Display, A: Display + Differentiable<T>> Display for Sin<T, A> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "sin({})", self.0)
+    }
+}

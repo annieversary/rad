@@ -37,3 +37,9 @@ where
         neg(self)
     }
 }
+
+impl<T: Display, A: Display + Differentiable<T>> Display for Neg<T, A> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "-{}", self.0)
+    }
+}
