@@ -20,10 +20,10 @@ mod tests {
 
     #[test]
     fn simple_addition() {
-        let addition = add(c(1), v(X));
+        let addition = v(X) + c(1i32);
         let r = addition.diff();
 
-        assert_eq!(r, c(0) + c(1));
+        assert_eq!(r, c(1) + c(0));
         // calc won't use the value passed in, since `r` is a constant, but we still need to pass a parameter
         assert_eq!(r.calc(0), 1);
     }
@@ -44,9 +44,9 @@ mod tests {
 
     #[test]
     fn calc_mul_cos() {
-        let cos = mul(cos(v(X)), c(1.0));
+        let cos = cos(v(X)) * c(3.0);
 
-        assert_eq!(cos.calc(0.0), 1.0);
+        assert_eq!(cos.calc(0.0), 3.0);
     }
 
     #[test]
@@ -67,6 +67,6 @@ mod tests {
         let r = v.diff();
 
         dbg!(r);
-        // assert_eq!(dbg!(r), mul(sin(add(c(1.0), sin(v(X)))), neg(cos(v(X)))));
+        // assert_eq!(dbg!(r), sin(c(1.0) + sin(v(X))) * -cos(v(X)));
     }
 }

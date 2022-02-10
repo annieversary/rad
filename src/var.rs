@@ -22,8 +22,8 @@ where
     }
 }
 impl<T, ID: Var> Var for V<T, ID> {}
-pub fn v<T, ID: Var>(_v: ID) -> V<T, ID> {
-    V(PhantomData)
+pub fn v<T: Domain, ID: Var + Clone>(_v: ID) -> D<T, V<T, ID>> {
+    D(V(PhantomData), PhantomData)
 }
 
 #[derive(PartialEq, Debug, Clone)]

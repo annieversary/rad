@@ -2,6 +2,7 @@ use crate::{
     differentiables::{add::*, *},
     domain::Domain,
 };
+use std::ops;
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct Mul<T, A: Differentiable<T>, B: Differentiable<T>>(A, B, PhantomData<T>);
@@ -33,4 +34,18 @@ where
     T: std::ops::Mul<T, Output = T> + std::ops::Add<T, Output = T>,
 {
     D(Mul(a, b, PhantomData), PhantomData)
+}
+
+impl<T, A, B> ops::Mul<D<T, B>> for D<T, A>
+where
+    A: Differentiable<T>,
+    B: Differentiable<T>,
+    T: Domain,
+    T: std::ops::Mul<T, Output = T> + std::ops::Add<T, Output = T>,
+{
+    type Output = D<T, Mul<T, D<T, A>, D<T, B>>>;
+
+    fn mul(self, rhs: D<T, B>) -> Self::Output {
+        mul(self, rhs)
+    }
 }

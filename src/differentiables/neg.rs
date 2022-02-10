@@ -25,3 +25,15 @@ where
 {
     D(Neg(a, PhantomData), PhantomData)
 }
+
+impl<T, A> ops::Neg for D<T, A>
+where
+    A: Differentiable<T>,
+    T: Domain + ops::Neg<Output = T>,
+{
+    type Output = D<T, Neg<T, D<T, A>>>;
+
+    fn neg(self) -> Self::Output {
+        neg(self)
+    }
+}
