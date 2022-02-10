@@ -33,6 +33,20 @@ where
     D(Add(a, b, PhantomData), PhantomData)
 }
 
+impl<T, A, B> ops::Add<D<T, B>> for D<T, A>
+where
+    A: Differentiable<T>,
+    B: Differentiable<T>,
+    T: Domain,
+    T: std::ops::Add<T, Output = T>,
+{
+    type Output = D<T, Add<T, D<T, A>, D<T, B>>>;
+
+    fn add(self, rhs: D<T, B>) -> Self::Output {
+        add(self, rhs)
+    }
+}
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct Mul<T, A: Differentiable<T>, B: Differentiable<T>>(A, B, PhantomData<T>);
 impl<T, A, B> Differentiable<T> for Mul<T, A, B>
