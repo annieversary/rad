@@ -1,4 +1,5 @@
 pub mod consts;
+pub mod default_impls;
 pub mod differentiables;
 pub mod domain;
 pub mod var;
@@ -7,6 +8,7 @@ pub mod var;
 
 pub mod prelude {
     pub use crate::consts::*;
+    pub use crate::default_impls::*;
     pub use crate::differentiables::{add::*, cos::*, mul::*, neg::*, sin::*, *};
     pub use crate::domain::*;
     pub use crate::var::*;
@@ -15,31 +17,6 @@ pub mod prelude {
 #[cfg(test)]
 mod tests {
     use super::prelude::*;
-
-    // TODO move this to inner code
-    #[derive(PartialEq, Debug, Clone)]
-    struct X;
-    impl Var for X {}
-
-    // TODO move this impl to another place
-    impl Domain for f32 {
-        const ZERO: Self = 0.0;
-        const ONE: Self = 1.0;
-    }
-    impl Sinable for f32 {
-        fn sin(v: Self) -> Self {
-            v.sin()
-        }
-    }
-    impl Cosable for f32 {
-        fn cos(v: Self) -> Self {
-            v.cos()
-        }
-    }
-    impl Domain for i32 {
-        const ZERO: Self = 0;
-        const ONE: Self = 1;
-    }
 
     #[test]
     fn simple_addition() {

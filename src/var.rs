@@ -25,3 +25,10 @@ impl<T, ID: Var> Var for V<T, ID> {}
 pub fn v<T, ID: Var>(_v: ID) -> V<T, ID> {
     V(PhantomData)
 }
+
+#[derive(PartialEq, Debug, Clone)]
+pub struct X;
+impl Var for X {}
+#[derive(PartialEq, Debug, Clone)]
+pub struct Y;
+impl Var for Y {}
