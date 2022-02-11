@@ -15,16 +15,13 @@ where
 {
     type Return = Const<T>;
 
-    fn calc(&self, vals: Values<T>) -> T {
+    fn calc(&self, vals: Values<T>) -> Result<T, VarNotProvided> {
         for (i, v) in &*vals.0 {
             if *i == TypeId::of::<ID>() {
-                return v.clone();
+                return Ok(v.clone());
             }
         }
-        panic!(
-            "No value provided for variable {}",
-            std::any::type_name::<ID>()
-        );
+        Err(VarNotProvided(std::any::type_name::<ID>()))
     }
 
     fn diff<ID2: Var>(&self) -> D<T, Self::Return> {

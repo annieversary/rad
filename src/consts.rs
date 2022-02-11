@@ -10,8 +10,8 @@ pub struct Const<T>(pub T);
 impl<T: Domain> Differentiable<T> for Const<T> {
     type Return = Const<T>;
 
-    fn calc(&self, _: Values<T>) -> T {
-        self.0.clone()
+    fn calc(&self, _: Values<T>) -> Result<T, VarNotProvided> {
+        Ok(self.0.clone())
     }
 
     fn diff<ID: Var>(&self) -> D<T, Self::Return> {

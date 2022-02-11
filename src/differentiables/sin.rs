@@ -21,8 +21,8 @@ where
 {
     type Return = Mul<T, D<T, Cos<T, A>>, D<T, A::Return>>;
 
-    fn calc(&self, v: Values<T>) -> T {
-        T::sin(self.0.calc(v))
+    fn calc(&self, v: Values<T>) -> Result<T, VarNotProvided> {
+        self.0.calc(v).map(T::sin)
     }
 
     fn diff<ID: Var>(&self) -> D<T, Self::Return> {

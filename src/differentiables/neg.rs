@@ -10,8 +10,8 @@ where
 {
     type Return = Neg<T, D<T, A::Return>>;
 
-    fn calc(&self, v: Values<T>) -> T {
-        ops::Neg::neg(self.0.calc(v))
+    fn calc(&self, v: Values<T>) -> Result<T, VarNotProvided> {
+        self.0.calc(v).map(ops::Neg::neg)
     }
 
     fn diff<ID: Var>(&self) -> D<T, Self::Return> {

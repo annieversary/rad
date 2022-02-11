@@ -23,39 +23,46 @@ mod single_var_tests {
 
         assert_eq!(r, c(1) + c(0));
         // calc won't use the value passed in, since `r` is a constant, but we still need to pass a parameter
-        assert_eq!(r.calc_x(0), 1);
+        assert_eq!(r.calc_x(0).unwrap(), 1);
     }
 
     #[test]
     fn calc_val() {
         let v = v(X);
 
-        assert_eq!(v.calc_x(33.0), 33.0);
+        assert_eq!(v.calc_x(33.0).unwrap(), 33.0);
+    }
+
+    #[test]
+    fn calc_val_wrong_var() {
+        let v = v(Y);
+
+        assert_eq!(v.calc_x(33.0f32), Err(VarNotProvided("rad::var::Y")));
     }
 
     #[test]
     fn calc_add_cos() {
         let cos = cos(v(X)) + cos(v(X));
 
-        assert_eq!(cos.calc_x(0.0), 2.0);
+        assert_eq!(cos.calc_x(0.0).unwrap(), 2.0);
     }
 
     #[test]
     fn calc_mul_cos() {
         let cos = cos(v(X)) * c(3.0);
 
-        assert_eq!(cos.calc_x(0.0), 3.0);
+        assert_eq!(cos.calc_x(0.0).unwrap(), 3.0);
     }
 
     #[test]
     fn addition_with_sin() {
         let addition = c(1.0) + sin(v(X));
-        assert_eq!(addition.calc_x(0.0), 1.0);
+        assert_eq!(addition.calc_x(0.0).unwrap(), 1.0);
 
         let r = addition.diff::<X>();
 
         assert_eq!(r, c(0.0) + mul(cos(v(X)), c(1.0)));
-        assert_eq!(r.calc_x(0.0), 1.0);
+        assert_eq!(r.calc_x(0.0).unwrap(), 1.0);
     }
 
     #[test]
@@ -100,12 +107,13 @@ mod multi_var_tests {
         assert_eq!(ry, ((-sin(v(X)) * c(0.0)) + (cos(v(Y)) * c(1.0))) + c(0.0));
 
         assert_eq!(
-            val.calc(vals(X, 0.0).add(Y, std::f32::consts::PI / 2.0).build()),
+            val.calc(vals(X, 0.0).add(Y, std::f32::consts::PI / 2.0).build())
+                .unwrap(),
             3.0
         );
         // we can also use helper functions
-        assert_eq!(rx.calc_xy(0.0, 0.0), 0.0);
-        assert_eq!(ry.calc_xy(0.0, 0.0), 1.0);
+        assert_eq!(rx.calc_xy(0.0, 0.0).unwrap(), 0.0);
+        assert_eq!(ry.calc_xy(0.0, 0.0).unwrap(), 1.0);
     }
 
     #[test]
