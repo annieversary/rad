@@ -12,7 +12,7 @@ where
 {
     type Return = Add<T, D<T, A::Return>, D<T, B::Return>>;
 
-    fn calc(&self, v: T) -> T {
+    fn calc(&self, v: Values<T>) -> T {
         self.0.calc(v.clone()) + self.1.calc(v)
     }
 

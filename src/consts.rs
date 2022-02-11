@@ -1,6 +1,6 @@
 use crate::differentiables::Differentiable;
 use crate::domain::Domain;
-use crate::var::Var;
+use crate::var::{Values, Var};
 use std::marker::PhantomData;
 
 use crate::differentiables::*;
@@ -10,7 +10,7 @@ pub struct Const<T>(pub T);
 impl<T: Domain> Differentiable<T> for Const<T> {
     type Return = Const<T>;
 
-    fn calc(&self, _: T) -> T {
+    fn calc(&self, _: Values<T>) -> T {
         self.0.clone()
     }
 

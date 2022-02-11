@@ -10,7 +10,7 @@ where
 {
     type Return = Neg<T, D<T, A::Return>>;
 
-    fn calc(&self, v: T) -> T {
+    fn calc(&self, v: Values<T>) -> T {
         ops::Neg::neg(self.0.calc(v))
     }
 

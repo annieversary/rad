@@ -15,7 +15,7 @@ where
 {
     type Return = Add<T, D<T, Mul<T, D<T, A::Return>, B>>, D<T, Mul<T, A, D<T, B::Return>>>>;
 
-    fn calc(&self, v: T) -> T {
+    fn calc(&self, v: Values<T>) -> T {
         self.0.calc(v.clone()) * self.1.calc(v)
     }
 

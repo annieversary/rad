@@ -21,7 +21,7 @@ where
 {
     type Return = Mul<T, D<T, Neg<T, D<T, Sin<T, A>>>>, D<T, A::Return>>;
 
-    fn calc(&self, v: T) -> T {
+    fn calc(&self, v: Values<T>) -> T {
         T::cos(self.0.calc(v))
     }
 

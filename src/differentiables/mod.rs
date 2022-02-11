@@ -13,7 +13,24 @@ use std::{fmt::Display, marker::PhantomData};
 pub trait Differentiable<T>: Clone {
     type Return: Differentiable<T>;
 
-    fn calc(&self, v: T) -> T;
+    /// calculate the value for this expression with the provided values
+    /// will panic if a variable has no provided value
+    fn calc(&self, v: Values<T>) -> T;
+
+    /// shorthand for calculating an expression that only contains `X`
+    fn calc_x(&self, x: T) -> T {
+        Self::calc(&self, val(X, x))
+    }
+    /// shorthand for calculating an expression that only contains `X` and `Y`
+    fn calc_xy(&self, x: T, y: T) -> T {
+        Self::calc(&self, vals(X, x).add(Y, y).build())
+    }
+    /// shorthand for calculating an expression that only contains `X`, `Y`, and `Z`
+    fn calc_xyz(&self, x: T, y: T, z: T) -> T {
+        Self::calc(&self, vals(X, x).add(Y, y).add(Z, z).build())
+    }
+
+    /// differentiate this expression in respect of the `ID` variable
     fn diff<ID: Var>(&self) -> D<T, Self::Return>;
 }
 
@@ -27,7 +44,7 @@ where
 {
     type Return = I::Return;
 
-    fn calc(&self, v: T) -> T {
+    fn calc(&self, v: Values<T>) -> T {
         I::calc(&self.0, v)
     }
 
