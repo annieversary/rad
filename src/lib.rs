@@ -61,7 +61,7 @@ mod single_var_tests {
 
         let r = addition.diff::<X>();
 
-        assert_eq!(r, c(0.0) + mul(cos(v(X)), c(1.0)));
+        assert_eq!(r, c(0.0) + cos(v(X)) * c(1.0));
         assert_eq!(r.calc_x(0.0).unwrap(), 1.0);
     }
 
@@ -71,7 +71,6 @@ mod single_var_tests {
 
         let r = val.diff::<X>();
 
-        // println!("{r}");
         assert_eq!(
             r,
             -sin(c(1.0) + sin(v(X))) * (c(0.0) + (cos(v(X)) * c(1.0)))
@@ -87,6 +86,23 @@ mod single_var_tests {
         let e = (-sin(cos(cos(v(X)))) * (-sin(cos(v(X))) * (-sin(v(X)) * c(1.0)))) + c(0.0);
 
         assert_eq!(r, e);
+    }
+
+    #[test]
+    fn strings() {
+        use std::borrow::Cow;
+        let string: Cow<'static, str> = "hey".into();
+
+        impl Domain for Cow<'static, str> {
+            const ZERO: Self = Self::Borrowed("");
+
+            const ONE: Self = Self::Borrowed("a");
+        }
+
+        let expr = c(string) + v(X);
+        let r = expr.diff::<X>();
+
+        assert_eq!(r, c(Cow::Borrowed("")) + c(Cow::Borrowed("a")));
     }
 }
 
