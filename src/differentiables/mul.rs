@@ -4,7 +4,7 @@ use crate::{
 };
 use std::ops;
 
-#[derive(PartialEq, Debug, Clone)]
+#[derive(PartialEq, Eq, Debug, Clone)]
 pub struct Mul<T, A: Differentiable<T>, B: Differentiable<T>>(A, B, PhantomData<T>);
 impl<T, A, B> Differentiable<T> for Mul<T, A, B>
 where

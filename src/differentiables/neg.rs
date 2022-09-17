@@ -1,7 +1,7 @@
 use crate::{differentiables::*, domain::Domain};
 use std::ops;
 
-#[derive(PartialEq, Debug, Clone)]
+#[derive(PartialEq, Eq, Debug, Clone)]
 pub struct Neg<T, A: Differentiable<T>>(A, PhantomData<T>);
 impl<T, A> Differentiable<T> for Neg<T, A>
 where

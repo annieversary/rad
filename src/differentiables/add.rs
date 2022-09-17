@@ -1,7 +1,7 @@
 use crate::{differentiables::*, domain::Domain};
 use std::ops;
 
-#[derive(PartialEq, Debug, Clone)]
+#[derive(PartialEq, Eq, Debug, Clone)]
 pub struct Add<T, A: Differentiable<T>, B: Differentiable<T>>(A, B, PhantomData<T>);
 impl<T, A, B> Differentiable<T> for Add<T, A, B>
 where

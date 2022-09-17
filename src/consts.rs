@@ -5,7 +5,7 @@ use std::marker::PhantomData;
 
 use crate::differentiables::*;
 
-#[derive(PartialEq, Debug, Clone)]
+#[derive(PartialEq, Eq, Debug, Clone)]
 pub struct Const<T>(pub T);
 impl<T: Domain> Differentiable<T> for Const<T> {
     type Return = Const<T>;

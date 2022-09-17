@@ -4,7 +4,7 @@ use crate::{
 };
 use std::ops;
 
-#[derive(PartialEq, Debug, Clone)]
+#[derive(PartialEq, Eq, Debug, Clone)]
 pub struct Sin<T, A: Differentiable<T>>(A, PhantomData<T>);
 pub trait Sinable {
     fn sin(v: Self) -> Self;

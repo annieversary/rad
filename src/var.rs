@@ -7,7 +7,7 @@ use std::{fmt::Display, marker::PhantomData};
 pub trait Var: 'static {}
 
 /// wrapper type for variables
-#[derive(PartialEq, Debug, Clone)]
+#[derive(PartialEq, Eq, Debug, Clone)]
 pub struct V<T, ID: Var>(PhantomData<(T, ID)>);
 impl<T: Domain, ID: Var> Differentiable<T> for V<T, ID>
 where
@@ -40,6 +40,7 @@ pub fn v<T: Domain, ID: Var + Clone>(_: ID) -> D<T, V<T, ID>> {
 
 #[derive(Clone)]
 pub struct Values<T>(Arc<[(TypeId, T)]>);
+#[derive(Clone, Default)]
 pub struct ValuesBuilder<T>(Vec<(TypeId, T)>);
 impl<T> ValuesBuilder<T> {
     pub fn new() -> Self {
@@ -62,13 +63,13 @@ pub fn vals<T, ID: Var>(i: ID, v: T) -> ValuesBuilder<T> {
     ValuesBuilder::new().add(i, v)
 }
 
-#[derive(PartialEq, Debug, Clone)]
+#[derive(PartialEq, Eq, Debug, Clone)]
 pub struct X;
 impl Var for X {}
-#[derive(PartialEq, Debug, Clone)]
+#[derive(PartialEq, Eq, Debug, Clone)]
 pub struct Y;
 impl Var for Y {}
-#[derive(PartialEq, Debug, Clone)]
+#[derive(PartialEq, Eq, Debug, Clone)]
 pub struct Z;
 impl Var for Z {}
 
